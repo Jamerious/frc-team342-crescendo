@@ -55,13 +55,13 @@ public class RotateToAngle extends Command {
   @Override
   public void initialize() {
 
-   rotateController.enableContinuousInput(0, 360);
+  rotateController.enableContinuousInput(0, 360);
    
-   start = 0;
+  start = 0;
 
-   end = start + angle;
+  end = start + angle;
 
-   rotateController.reset();
+  rotateController.reset();
 
   }
 
@@ -76,7 +76,7 @@ public class RotateToAngle extends Command {
 
     double rotationSpeed = rotateController.calculate(current, end);
 
-    ChassisSpeeds radial = new ChassisSpeeds(0, 0, -rotationSpeed);
+    ChassisSpeeds radial = new ChassisSpeeds(0, 0, /*check this */rotationSpeed);
     
     SwerveDriveKinematics.desaturateWheelSpeeds(swerve.getModuleStates(), MAX_ROTATE_SPEED);
    

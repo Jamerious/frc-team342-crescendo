@@ -95,10 +95,14 @@ public static Command LEftAuto(SwerveDrive swerve, Outtake outtake, Intake intak
 
   );
 }
-public static Command RightAuto (SwerveDrive swerve, Outtake outtake, Intake intake, Wrist wrist){
+public static Command RightAuto (SwerveDrive swerve, Outtake outtake, Intake intake, Wrist wrist, ChassisSpeeds chassisSpeeds){
 
 
   return Commands.sequence(
+
+  new TimedDrive(swerve,0.946,chassisSpeeds,MAX_DRIVE_SPEED),
+
+  new RotateToAngle(-53.3, swerve),
 
   new Load(outtake, intake),
 
@@ -106,13 +110,13 @@ public static Command RightAuto (SwerveDrive swerve, Outtake outtake, Intake int
 
     new ParallelCommandGroup(
 
-      //new TimedDrive(swerve, .2, .2, .2),
+      new TimedDrive(swerve, .1, chassisSpeeds, MAX_DRIVE_SPEED),
 
       new MoveWristToPosition(wrist, LOW_WRIST_POS)
     
   ),
 
- // new TimedDrive(swerve,.2,0,0),
+      new TimedDrive(swerve,.1,chassisSpeeds,MAX_DRIVE_SPEED),
 
   new Load(outtake, intake)
 

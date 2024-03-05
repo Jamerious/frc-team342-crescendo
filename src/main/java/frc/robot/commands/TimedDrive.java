@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import static frc.robot.Constants.DriveConstants.MAX_DRIVE_SPEED;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveDrive;
@@ -18,18 +20,18 @@ public class TimedDrive extends Command {
   private final Timer m_timer = new Timer();
   private SwerveDrive swerve;
   private double driveTime;
-  private double xSpeed;
-  private double ySpeed;
-  private double rotate;
+  private double maxDriveSpeed;
+  private ChassisSpeeds chassisSpeeds;
   
-  public TimedDrive( SwerveDrive swerve, double driveTime, double xSpeed, double ySpeed) {
+  
+  public TimedDrive( SwerveDrive swerve, double driveTime, ChassisSpeeds chassisSpeed, double maxDriveSpeed) {
     // Use addRequirements() here to declare subsystem dependencies.
     
       this.swerve = swerve; 
       this.driveTime = driveTime; 
-      this.xSpeed = xSpeed;
-      this.ySpeed = ySpeed;
-      this.rotate = rotate;
+      this.maxDriveSpeed = maxDriveSpeed;
+      this.chassisSpeeds = chassisSpeed;
+      
     
 
       addRequirements(swerve);
@@ -43,6 +45,8 @@ public class TimedDrive extends Command {
   @Override
   public void initialize() {
 
+  
+
     m_timer.restart();
     System.out.println("Initializing Timer");
 
@@ -54,7 +58,8 @@ public class TimedDrive extends Command {
   public void execute() {
 
     System.out.println("Timer: " + m_timer.get() + " ");
-    swerve.drive(xSpeed, ySpeed, rotate);
+
+    swerve.drive(chassisSpeeds, MAX_DRIVE_SPEED);
 
   }
 

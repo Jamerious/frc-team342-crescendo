@@ -41,6 +41,7 @@ public class Intake extends SubsystemBase {
     
     intake.setIdleMode(IdleMode.kBrake);
 
+    intake.setSmartCurrentLimit(30);
     intakeSensor = new DigitalInput(5);
 
     velocity = 0.1;

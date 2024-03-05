@@ -37,8 +37,10 @@ public class Outtake extends SubsystemBase {
     leftMotor = new CANSparkMax(OuttakeConstants.MOTOR_ONE_ID, MotorType.kBrushless);
     rightMotor = new CANSparkMax(OuttakeConstants.MOTOR_TWO_ID, MotorType.kBrushless);
 
+    leftMotor.setSmartCurrentLimit(30);
+    rightMotor.setSmartCurrentLimit(30);
+
     leftMotor.setInverted(true);
-    // rightMotor.setInverted(false);
     rightMotor.follow(leftMotor, true);
 
     leftMotor.setIdleMode(IdleMode.kCoast);
@@ -84,14 +86,5 @@ public class Outtake extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Actual Velocity", encoder.getVelocity());
     SmartDashboard.putNumber("Desired Velocity", velocity);
-
-    double p = SmartDashboard.getNumber("setP", 1);
-    double i = SmartDashboard.getNumber("setI", 1);
-    double d = SmartDashboard.getNumber("setD", 1);
-    double ff = SmartDashboard.getNumber("setFF", 0);
-    pidController.setP(p);
-    pidController.setI(i);
-    pidController.setD(d);
-    pidController.setFF(ff);
   }
 }

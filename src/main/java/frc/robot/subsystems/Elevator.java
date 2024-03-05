@@ -22,8 +22,6 @@ public class Elevator extends SubsystemBase {
   private final CANSparkMax elevator_right;
   private final SparkPIDController pid_elevator;
 
-  private final DigitalInput elevatorSwitchHigh;
-  private final DigitalInput elevatorSwitchLow;
 
   /** Creates a new Elevator. */
   public Elevator() {
@@ -31,8 +29,6 @@ public class Elevator extends SubsystemBase {
     elevator_left = new CANSparkMax(LEFT_ELEV_ID, MotorType.kBrushless);
     elevator_right = new CANSparkMax(RIGHT_ElEV_ID, MotorType.kBrushless);
 
-    elevatorSwitchHigh = new DigitalInput(ELEVATOR_SWITCH_HIGH);
-    elevatorSwitchLow = new DigitalInput(ELEVATOR_SWITCH_LOW);
 
     pid_elevator = elevator_left.getPIDController();
 
@@ -51,14 +47,6 @@ public class Elevator extends SubsystemBase {
     pid_elevator.setReference(pos, ControlType.kPosition);
   }
 
-  public boolean getElevatorSwitchLow(){
-    return elevatorSwitchLow.get();
-  }
-
-  public boolean getElevatorSwitchHigh(){
-    return elevatorSwitchHigh.get();
-  }
-
   public double getElevatorEncoder(){
     return elevator_left.getEncoder().getPosition();
   }
@@ -68,10 +56,5 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Elevator Position",elevator_left.getEncoder().getPosition());
   }
-
-  @Override
-  public void initSendable(SendableBuilder sendableBuilder) {
-    sendableBuilder.addBooleanProperty("elevatorSwitchLow", () -> elevatorSwitchLow.get(), null);
-    sendableBuilder.addBooleanProperty("elevatorSwitchHigh", () -> elevatorSwitchHigh.get(), null);
-  }
 }
+

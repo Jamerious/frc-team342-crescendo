@@ -69,7 +69,7 @@ public class SwerveDrive extends SubsystemBase {
       DriveConstants.FRONT_LEFT[0],
       DriveConstants.FRONT_LEFT[1],
       DriveConstants.FL_ENCODER_PORT,
-      false, false,
+      false,true,
       DriveConstants.FRONT_LEFT_OFFSET,
       DriveConstants.PID_VALUES);
 
@@ -77,7 +77,7 @@ public class SwerveDrive extends SubsystemBase {
       DriveConstants.FRONT_RIGHT[0], 
       DriveConstants.FRONT_RIGHT[1],
       DriveConstants.FR_ENCODER_PORT,
-      false, true,
+      false, false,
       DriveConstants.FRONT_RIGHT_OFFSET,
       DriveConstants.PID_VALUES);
    
@@ -143,7 +143,7 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public Rotation2d getRotation2d() {
-    return Rotation2d.fromDegrees(getHeading());
+    return Rotation2d.fromRadians(getHeading() * (Math.PI / 180));
   }
 
   public Pose2d getPose() {
@@ -199,7 +199,7 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public Command toggleFieldOriented() {
-    return run(()-> fieldOriented = !fieldOriented);
+    return runEnd(()-> {}, () -> fieldOriented = !fieldOriented);
   }
 
   public boolean getFieldOriented() {
@@ -211,7 +211,7 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public Command toggleSlowMode() {
-    return run(() -> slowMode = !slowMode);
+    return runEnd(() -> {}, () -> slowMode = !slowMode);
   }
 
   public ChassisSpeeds getChassisSpeeds() {

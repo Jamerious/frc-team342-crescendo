@@ -66,7 +66,7 @@ public static Command LEftAuto(SwerveDrive swerve, Outtake outtake, Intake intak
 
     //Puts wrist down in order to pick up
 
-      new MoveWristToPosition(wrist, LOW_WRIST_POS)
+      new MoveWristToPosition(wrist, intake, LOW_WRIST_POS)
     
   ),
 
@@ -79,7 +79,7 @@ public static Command LEftAuto(SwerveDrive swerve, Outtake outtake, Intake intak
 
     // Moves Wrist up
 
-      new MoveWristToPosition(wrist, HIGH_WRIST_POS)
+      new MoveWristToPosition(wrist,intake, HIGH_WRIST_POS)
 
 
   ),
@@ -100,25 +100,25 @@ public static Command RightAuto (SwerveDrive swerve, Outtake outtake, Intake int
 
   return Commands.sequence(
 
-  new TimedDrive(swerve,0.946,chassisSpeeds,MAX_DRIVE_SPEED),
+  new TimedDrive(swerve,1,chassisSpeeds,MAX_DRIVE_SPEED),
 
-  new RotateToAngle(-53.3, swerve),
+  new RotateToAngle(56.6, swerve),
 
-  new Load(outtake, intake),
+  new Load(outtake, intake).withTimeout(3)
 
-  new RotateToAngle(0, swerve),
+ // new RotateToAngle(56.6, swerve),
 
-    new ParallelCommandGroup(
+   // new ParallelCommandGroup(
 
-      new TimedDrive(swerve, .1, chassisSpeeds, MAX_DRIVE_SPEED),
+     // new TimedDrive(swerve, .1, chassisSpeeds, MAX_DRIVE_SPEED),
 
-      new MoveWristToPosition(wrist, LOW_WRIST_POS)
+     // new MoveWristToPosition(wrist,intake, LOW_WRIST_POS)
     
-  ),
+ // ),
 
-      new TimedDrive(swerve,.1,chassisSpeeds,MAX_DRIVE_SPEED),
+   //   new TimedDrive(swerve,.1,chassisSpeeds,MAX_DRIVE_SPEED),
 
-  new Load(outtake, intake)
+ // new Load(outtake, intake)
 
   );
 }
@@ -139,8 +139,7 @@ public static Command MiddleShoot(SwerveDrive swerve, Outtake outtake, Intake in
     
   //new TimedDrive(swerve, 2, .2, 0),
 
-  new MoveWristToPosition(wrist, LOW_WRIST_POS)
-  
+  new MoveWristToPosition(wrist, intake, LOW_WRIST_POS)
   
   
   ),
@@ -148,11 +147,11 @@ public static Command MiddleShoot(SwerveDrive swerve, Outtake outtake, Intake in
 
  // new TimedDrive(swerve, 2, .2, 0),
 
-  new MoveWristToPosition(wrist,LOW_WRIST_POS),
+  new MoveWristToPosition(wrist,intake,LOW_WRIST_POS),
 
     new ParallelCommandGroup(
       
-     new MoveWristToPosition(wrist, HIGH_WRIST_POS)
+     new MoveWristToPosition(wrist, intake, HIGH_WRIST_POS)
 
       //new TimedDrive(swerve, .2, -.2, 0)
     

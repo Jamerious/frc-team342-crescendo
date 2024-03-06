@@ -41,28 +41,24 @@ public class RotateToAngle extends Command {
 
     rotateController = new PIDController(
      
-    0.05,
-    0, 
-    0
-
+      0.1,
+      0, 
+      0.000
     );
-
-    rotateController.setTolerance(.05);
-
+    
+    rotateController.reset();
+    rotateController.setTolerance(2);
+    
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
   rotateController.enableContinuousInput(0, 360);
    
   start = 0;
 
   end = start + angle;
-
-  rotateController.reset();
-
   }
 
 
@@ -72,9 +68,11 @@ public class RotateToAngle extends Command {
 
     rotateController.setSetpoint(end);
 
-    current = swerve.getGyro().getRotation2d().getDegrees();
-
+    current = swerve.getGyro().getYaw();
+    
     double rotationSpeed = rotateController.calculate(current, end);
+    System.out.println("current: " + current + " end: " + end + " error: " + (end-current));
+    System.out.println("rotation Speed: " + rotationSpeed);
 
     ChassisSpeeds radial = new ChassisSpeeds(0, 0, /*check this */rotationSpeed);
     
@@ -85,6 +83,7 @@ public class RotateToAngle extends Command {
     SmartDashboard.putNumber("Current",current);
     SmartDashboard.putNumber("Start", start);
     SmartDashboard.putNumber("end",end);
+    SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
 
   }
 

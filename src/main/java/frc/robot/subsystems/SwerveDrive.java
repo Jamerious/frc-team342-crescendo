@@ -69,7 +69,7 @@ public class SwerveDrive extends SubsystemBase {
       DriveConstants.FRONT_LEFT[0],
       DriveConstants.FRONT_LEFT[1],
       DriveConstants.FL_ENCODER_PORT,
-      false,true,
+      false, true,
       DriveConstants.FRONT_LEFT_OFFSET,
       DriveConstants.PID_VALUES);
 
@@ -98,6 +98,7 @@ public class SwerveDrive extends SubsystemBase {
       DriveConstants.BL_PID_VALUES);
 
     gyro = new AHRS(SerialPort.Port.kUSB);
+    
 
     states = new SwerveModuleState[] {
       frontLeft.getState(),
@@ -238,7 +239,7 @@ public class SwerveDrive extends SubsystemBase {
     
   public void drive(ChassisSpeeds speeds, double maxDriveSpeed) {
     chassisSpeeds = new ChassisSpeeds(-speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
-    System.out.println(chassisSpeeds + "[\n]" + this.getChassisSpeeds());
+    //System.out.println(chassisSpeeds + "[\n]" + this.getChassisSpeeds());
     chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
     
     SwerveModuleState moduleStates[] = KINEMATICS.toSwerveModuleStates(chassisSpeeds);
@@ -283,8 +284,12 @@ public class SwerveDrive extends SubsystemBase {
   public void periodic() {
     swerveOdometry.update(getRotation2d(), getModulePositions());
     SmartDashboard.putNumber("Robot Heading", getHeading());
-    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+    // SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
     SmartDashboard.putBoolean("Field Oriented", fieldOriented);
-    SmartDashboard.putString("Pose", getPose().toString());
+    // SmartDashboard.putString("Pose", getPose().toString());
+    SmartDashboard.putNumber("Front Left Offset", frontLeft.getOffsets());
+    SmartDashboard.putNumber("Front Right Offset", frontRight.getOffsets());
+    SmartDashboard.putNumber("Back Left Offset", backLeft.getOffsets());
+    SmartDashboard.putNumber("Back Right Offset", backRight.getOffsets());
   }
 }

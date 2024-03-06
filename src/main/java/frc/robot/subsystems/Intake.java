@@ -38,25 +38,20 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake(){
     intake = new CANSparkMax(INTAKE_MOTOR, CANSparkLowLevel.MotorType.kBrushless);      
-    
     intake.setIdleMode(IdleMode.kBrake);
-
     intake.setSmartCurrentLimit(30);
     intakeSensor = new DigitalInput(5);
 
-    velocity = 0.1;
-    SmartDashboard.putNumber("Set Velocity", 0.3);
+    velocity = 0.3;
+    // SmartDashboard.putNumber("Set Velocity", 0.3);
   }
 
 
   //command version
   public Command spinIntake(){
     return runEnd( () -> {
-      if(!intakeSensor.get()){
-
-      intake.set(INTAKE_SPEED);
-
-      intake.set(-INTAKE_SPEED);
+      if(intakeSensor.get()){
+        intake.set(-INTAKE_SPEED);
       }
       else {
         intake.set(0);
@@ -73,7 +68,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void feedShooter(){
-    intake.set(-FEED_SHOOTER_SPEED);
+    intake.set(FEED_SHOOTER_SPEED);
   }
 
   public void hold(){
@@ -101,15 +96,14 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // SmartDashboard.putNumber("wrist", throughBore.getAbsolutePosition());
-    velocity = SmartDashboard.getNumber("Set Velocity", velocity);
+    // velocity = SmartDashboard.getNumber("Set Velocity", velocity);
     SmartDashboard.putBoolean("STUCK", isStuck());
+    SmartDashboard.putNumber("Current", intake.getOutputCurrent());
+    SmartDashboard.putBoolean("Intake Sensor", getIntakeSensor());
   }
 
   @Override
     public void initSendable(SendableBuilder sendableBuilder) {
-      sendableBuilder.setSmartDashboardType("intake Values");
-      sendableBuilder.addBooleanProperty("intake Sensor", () -> intakeSensor.get(), null);
-      sendableBuilder.addBooleanProperty("Intake sensor connection", () -> throughBore.isConnected(), null);
+     
     }
 }

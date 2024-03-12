@@ -85,7 +85,7 @@ public class SwerveDrive extends SubsystemBase {
       DriveConstants.BACK_LEFT[0],
       DriveConstants.BACK_LEFT[1],
       DriveConstants.BL_ENCODER_PORT,
-      false, true,
+      false, false,
       DriveConstants.BACK_LEFT_OFFSET,
       DriveConstants.PID_VALUES);  
       
@@ -116,7 +116,7 @@ public class SwerveDrive extends SubsystemBase {
     chassisSpeedSupplier = () -> getChassisSpeeds();
     shouldFlipSupplier = () -> false;
 
-    fieldOriented = false;
+    fieldOriented = true;
     slowMode = false;
 
     field = new Field2d();
@@ -239,6 +239,7 @@ public class SwerveDrive extends SubsystemBase {
     
   public void drive(ChassisSpeeds speeds, double maxDriveSpeed) {
     chassisSpeeds = new ChassisSpeeds(-speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+    // System.out.println(chassisSpeeds + "[\n]" + this.getChassisSpeeds());
     //System.out.println(chassisSpeeds + "[\n]" + this.getChassisSpeeds());
     chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
     
@@ -252,6 +253,20 @@ public class SwerveDrive extends SubsystemBase {
       return alliance.get() == DriverStation.Alliance.Red;
     }
     return false;
+  }
+
+  public void setBrakeMode() {
+    frontLeft.setBrakeMode();
+    frontRight.setBrakeMode();
+    backLeft.setBrakeMode();
+    backRight.setBrakeMode();
+  }
+
+  public void setCoastMode() {
+    frontLeft.setCoastMode();
+    frontRight.setCoastMode();
+    backLeft.setCoastMode();
+    backRight.setCoastMode();
   }
 
   public double get5V() {
@@ -268,28 +283,27 @@ public class SwerveDrive extends SubsystemBase {
       shouldFlipSupplier,
       this
       );
-    System.out.println("Auto builder configured");
+    // System.out.println("Auto builder configured");
 
-    PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
-    SmartDashboard.putData("Field", field);
+    // PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+    // SmartDashboard.putData("Field", field);
   }
 
   @Override
   public void initSendable(SendableBuilder sendableBuilder) {
-    sendableBuilder.setSmartDashboardType("Encoder Values");
-    sendableBuilder.addDoubleProperty("5 Volt", () -> get5V(), null);
+    sendableBuilder.setSmartDashboardType("Swerve drove");
+    // sendableBuilder.addDoubleProperty("5 Volt", () -> get5V(), null);
+    sendableBuilder.addBooleanProperty("Field Oriented", () -> fieldOriented, null);
+    sendableBuilder.addDoubleProperty("Robot Heading", () -> getHeading(), null);
+    sendableBuilder.addBooleanProperty("Slow mode", () -> getSlowMode(), null);
+    // sendableBuilder.addDoubleProperty("FL Offsets", () -> frontLeft.getOffsets(), null);
+    // sendableBuilder.addDoubleProperty("FR Offsets", () -> frontRight.getOffsets(), null);
+    // sendableBuilder.addDoubleProperty("BL Offsets", () -> backLeft.getOffsets(), null);
+    // sendableBuilder.addDoubleProperty("BR Offsets", () -> backRight.getOffsets(), null);
   }
 
   @Override
   public void periodic() {
     swerveOdometry.update(getRotation2d(), getModulePositions());
-    SmartDashboard.putNumber("Robot Heading", getHeading());
-    // SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-    SmartDashboard.putBoolean("Field Oriented", fieldOriented);
-    // SmartDashboard.putString("Pose", getPose().toString());
-    SmartDashboard.putNumber("Front Left Offset", frontLeft.getOffsets());
-    SmartDashboard.putNumber("Front Right Offset", frontRight.getOffsets());
-    SmartDashboard.putNumber("Back Left Offset", backLeft.getOffsets());
-    SmartDashboard.putNumber("Back Right Offset", backRight.getOffsets());
   }
 }

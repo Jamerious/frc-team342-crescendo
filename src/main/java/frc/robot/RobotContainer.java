@@ -5,40 +5,23 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.commands.Drive.DriveDistance;
-import frc.robot.commands.RotateToAngle;
-import frc.robot.commands.TimedDrive;
-import frc.robot.commands.Autos.Autos;
-import frc.robot.commands.Autos.Autos.*;
-import frc.robot.commands.Drive.DriveWithJoystick;
-import frc.robot.commands.Outtake.OuttakeNote;
-import frc.robot.subsystems.Outtake;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.subsystems.Wrist;
-
-import javax.swing.text.WrappedPlainView;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.Climb;
 import frc.robot.commands.Load;
 import frc.robot.commands.MoveWristPercent;
 import frc.robot.commands.MoveWristToPosition;
+import frc.robot.commands.Autos.Autos;
 import frc.robot.commands.Drive.DriveWithJoystick;
 import edu.wpi.first.wpilibj.XboxController;
 
 //import static frc.robot.Constants.IntakeConstants.feedShooterSpeed;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -68,13 +51,10 @@ public class RobotContainer {
   private XboxController operator;
 
   private DriveWithJoystick driveWithJoystick;
-  private DriveDistance driveDistance;
-  private OuttakeNote outtakeNote;
-  private RotateToAngle rotate90;
   private MoveWristToPosition moveWristDown;
   private MoveWristToPosition moveWristUp;
   private MoveWristToPosition moveWristAmp;
-  private Autos shootmiddle;
+  private SequentialCommandGroup wristDownIntake;
 
   // private MoveWristToPosition moveWrist;
 
@@ -88,7 +68,6 @@ public class RobotContainer {
   private XboxController joy;
 
   //private JoystickButton goToZeroBtn;
-  private JoystickButton rotateToAngleButton;
   private JoystickButton toggleFieldOrientedBtn;
   private JoystickButton toggleSlowModeBtn;
   private JoystickButton outtakeNoteBtn;
@@ -96,8 +75,6 @@ public class RobotContainer {
   private JoystickButton rotateBTN;
   private JoystickButton wristButton;
   private JoystickButton intakeBtn;
-
-  private SendableChooser<Command> autoChooser;
   private JoystickButton climbButton;
 
   //private POVButton wristDownBtn;
@@ -106,11 +83,12 @@ public class RobotContainer {
   //private POVButton wristLeftBtn;
 
   private Intake intake;
-  private Wrist wrist;
   private JoystickButton loadButton;
   private Elevator elevator;
 
   private MoveWristPercent moveWristPercent;
+
+  private SendableChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -119,17 +97,14 @@ public class RobotContainer {
     intake = new Intake();
     outtake = new Outtake();
     load = new Load(outtake, intake);
-    wrist = new Wrist();
     
     swerve = new SwerveDrive();
 
     joy = new XboxController(0);
     driveWithJoystick = new DriveWithJoystick(swerve, joy);
     // outtakeNote = new OuttakeNote(0.5, outtake);
-    driveDistance = new DriveDistance(1, 5, swerve);
 
     //driveWithJoystick = new DriveWithJoystick(swerve, joy, swerve.getFieldOriented());
-    rotateToAngleButton = new JoystickButton(joy, XboxController.Button.kB.value);
     
     
     swerve.setDefaultCommand(driveWithJoystick);
@@ -180,9 +155,6 @@ public class RobotContainer {
     load = new Load(outtake, intake);
     climb = new Climb(elevator, operator);
 
-    moveWristDown = new MoveWristToPosition(wrist, intake, IntakeConstants.LOW_WRIST_POS);
-    moveWristUp = new MoveWristToPosition(wrist, intake, IntakeConstants.HIGH_WRIST_POS);
-    moveWristAmp = new MoveWristToPosition(wrist, intake, IntakeConstants.AMP_POS);
 
    // wristDownIntake = new SequentialCommandGroup(moveWristDown, intake.spinIntake().until(() -> !intake.getIntakeSensor()));
 
@@ -192,41 +164,21 @@ public class RobotContainer {
     outtakeNoteBtn = new JoystickButton(operator, XboxController.Button.kA.value);
     
    // wristDownIntake = new SequentialCommandGroup(moveWristDown, intake.spinIntake().until(() -> !intake.getIntakeSensor()));
-    moveWristPercent = new MoveWristPercent(operator, wrist);
 
-    wrist.setDefaultCommand(moveWristPercent);
+    autoChooser = new SendableChooser<>();
+    
+    //wrist.setDefaultCommand(moveWristPercent);
     swerve.setDefaultCommand(driveWithJoystick);
     elevator.setDefaultCommand(climb);
 
-   // SmartDashboard.putData(swerve);
    SmartDashboard.putData(swerve);
    SmartDashboard.putData(outtake);
    SmartDashboard.putData(intake);
-   SmartDashboard.putData(wrist);
+   //SmartDashboard.putData(wrist);
+   SmartDashboard.putData(elevator);
 
     configureBindings();
-
-
-    autoChooser = new SendableChooser<>();
-
-    autoChooser.addOption("Middle Auto 2 Piece", Autos.MiddleShoot(swerve, outtake, intake, wrist));
-
-    autoChooser.addOption("Left Side Speaker 2 piece", Autos.LEftAuto(swerve, outtake, intake, wrist));
-    
-    autoChooser.addOption("Right Side Speaker 2 Piece", Autos.RightAuto(swerve, outtake, intake, wrist, new ChassisSpeeds(1,0,0)));
-
-    autoChooser.addOption("Do nothing", Autos.DoNothing());
-
-    autoChooser.addOption("Shoot and Scoot", Autos.shootAndScoot(swerve,outtake,intake, new ChassisSpeeds(1,0,0)));
-
-    SmartDashboard.putData(autoChooser);
-
   } 
-
-
-
-
-
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -268,11 +220,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    
-    return autoChooser.getSelected();
-
-
-
-
+    // An example command will be run in autonomous
+    return null;
   }
 }

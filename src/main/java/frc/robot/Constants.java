@@ -36,13 +36,15 @@ public static class IntakeConstants {
   public static final double INTAKE_SPEED = 0.6;
   public static final double INTAKE_SHOOT_SPEED = 1;
   public static final double FEED_SHOOTER_SPEED = 1;
-  public static final double WRIST_SPEED = 0.2;
+  public static final double WRIST_SPEED = 0.7;
 
   public static final double LOW_WRIST_POS = 0.9;
-  public static final double HIGH_WRIST_POS = 0.3;
+  public static final double HIGH_WRIST_POS = 0.311;
   public static final double AMP_POS = 0.535; // In memoriam of 0.342 :(
 
-  public static final double DESIRED_SPEED = 4000;
+  public static final double MAX_DISTANCE = 88.49;
+
+  public static final double DESIRED_SPEED = 4800;
   
   public static final double DEFAULT_CURRENT = 30;
 }
@@ -81,7 +83,6 @@ public static class IntakeConstants {
     public static final double[] BL_PID_VALUES = {0.5, 0.01, 0};
 
     // Drive Motor IDs
-    //switch back to 1,2,3,4 - temporarily 9,10,11,12 *
     public static final int FRONT_LEFT_DRIVE_ID = 1;
     public static final int FRONT_RIGHT_DRIVE_ID = 2;
     public static final int BACK_LEFT_DRIVE_ID = 3;  
@@ -108,7 +109,7 @@ public static class IntakeConstants {
     // Offsets
     public static final double FRONT_LEFT_OFFSET = 5.03;
     public static final double FRONT_RIGHT_OFFSET = 2.36;
-    public static final double BACK_LEFT_OFFSET = 0.24;
+    public static final double BACK_LEFT_OFFSET = 2.35;
     public static final double BACK_RIGHT_OFFSET = 1.08;
 
     public static final HolonomicPathFollowerConfig PATH_CONFIG = new HolonomicPathFollowerConfig(

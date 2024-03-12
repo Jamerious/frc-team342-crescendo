@@ -53,22 +53,18 @@ public class MoveWristToPosition extends Command {
 
     //to make sure the wrist is not going too low becase if it did the wrist being too low could cause a motor heatup
     if (goingDown && currPosition < LOW_WRIST_POS) {
-      wrist.rotateWrist(-.75);
-      // System.out.println("Moving Down");
+      wrist.rotateWrist(-.95);
     }
     //makes sure that its not going too far back to avoid hitting the back
     else if (!goingDown && currPosition > HIGH_WRIST_POS){
-      wrist.rotateWrist(.75);
-      // System.out.println("Moving Up");
+      wrist.rotateWrist(.95);
     }
   
    if(intake.getIntakeSensor()) {
       intake.hold();
-      // System.out.println("Holding)");
     }
     else {
       intake.stop();
-      // System.out.println("Stopping");
     }
   }
 
@@ -76,14 +72,12 @@ public class MoveWristToPosition extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //intake.rotateWristToPosition(position);
     wrist.rotateWrist(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("Finished moving arm");
     return (wrist.getthroughBore().getAbsolutePosition() >= position - 0.01) && (wrist.getthroughBore().getAbsolutePosition() <= position + 0.01);
   }
 }

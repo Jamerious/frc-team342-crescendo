@@ -21,7 +21,7 @@ import static frc.robot.Constants.DriveConstants.*;
 public class RotateToAngle extends Command {
 
   private SwerveDrive swerve; 
-  private  PIDController rotateController; 
+  private PIDController rotateController; 
   
   private double start; 
   private double end; 
@@ -71,20 +71,12 @@ public class RotateToAngle extends Command {
     current = swerve.getGyro().getYaw();
     
     double rotationSpeed = rotateController.calculate(current, end);
-    System.out.println("current: " + current + " end: " + end + " error: " + (end-current));
-    System.out.println("rotation Speed: " + rotationSpeed);
 
-    ChassisSpeeds radial = new ChassisSpeeds(0, 0, /*check this */rotationSpeed);
+    ChassisSpeeds radial = new ChassisSpeeds(0, 0, rotationSpeed);
     
     SwerveDriveKinematics.desaturateWheelSpeeds(swerve.getModuleStates(), MAX_ROTATE_SPEED);
    
     swerve.drive(radial, MAX_DRIVE_SPEED); 
-
-    SmartDashboard.putNumber("Current",current);
-    SmartDashboard.putNumber("Start", start);
-    SmartDashboard.putNumber("end",end);
-    SmartDashboard.putNumber("Rotation Speed", rotationSpeed);
-
   }
 
   // Called once the command ends or is interrupted.
@@ -92,16 +84,11 @@ public class RotateToAngle extends Command {
   public void end(boolean interrupted) {
   
     swerve.stopModules();
-
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    
-    System.out.println("isFinished Reporting: " + rotateController.atSetpoint());
-    
     return rotateController.atSetpoint();
-
   }
 }

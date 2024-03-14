@@ -11,6 +11,8 @@ import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import com.revrobotics.RelativeEncoder;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -69,7 +71,7 @@ public class SwerveDrive extends SubsystemBase {
       DriveConstants.FRONT_LEFT[0],
       DriveConstants.FRONT_LEFT[1],
       DriveConstants.FL_ENCODER_PORT,
-      false, true,
+      false, false,
       DriveConstants.FRONT_LEFT_OFFSET,
       DriveConstants.PID_VALUES);
 
@@ -77,7 +79,7 @@ public class SwerveDrive extends SubsystemBase {
       DriveConstants.FRONT_RIGHT[0], 
       DriveConstants.FRONT_RIGHT[1],
       DriveConstants.FR_ENCODER_PORT,
-      false, false,
+      false, true,
       DriveConstants.FRONT_RIGHT_OFFSET,
       DriveConstants.PID_VALUES);
    
@@ -93,7 +95,7 @@ public class SwerveDrive extends SubsystemBase {
       DriveConstants.BACK_RIGHT[0],
       DriveConstants.BACK_RIGHT[1],
       DriveConstants.BR_ENCODER_PORT,
-      false, false,
+      false, true,
       DriveConstants.BACK_RIGHT_OFFSET,
       DriveConstants.BL_PID_VALUES);
 
@@ -154,6 +156,11 @@ public class SwerveDrive extends SubsystemBase {
   public void resetOdometry(Pose2d pose) {
     swerveOdometry.resetPosition(getRotation2d(), getModulePositions(), pose);
   }
+
+  public RelativeEncoder leftGetter(){
+    return frontLeft.LeftGetter();
+  }
+
 
   /**
    * Sets modules to speeds within the allowed range

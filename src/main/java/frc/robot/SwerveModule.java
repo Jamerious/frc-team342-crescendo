@@ -95,6 +95,10 @@ public class SwerveModule extends SubsystemBase {
     return rotateEncoder.getVelocity();
   }
 
+  public RelativeEncoder LeftGetter() {
+    return driveMotor.getEncoder();
+  }
+
   /**
    * @return Absolute encoder angle in radians with offset removed.
    */
